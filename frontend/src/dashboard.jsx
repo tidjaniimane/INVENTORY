@@ -27,7 +27,7 @@ const Dashboard = () => {
     { path: '/suppliers', label: 'Suppliers', icon: '🚚' },
     { path: '/orders', label: 'Orders', icon: '📝' },
     { path: '/categories', label: 'Categories', icon: '📝' },
-    { path: '/customer', label: 'Customer', icon: '📝' },
+    
   ];
 
   return (
