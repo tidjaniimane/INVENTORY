@@ -599,6 +599,26 @@ app.use((err, req, res, next) => {
     });
 });
 
+//LOGIN ROUTE 
+//LOGIN ROUTE
+// Login endpoint
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+  
+    // Check if user exists
+    const user = users.find(
+      (u) => u.username === username && u.password === password
+    );
+  
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+  
+    // Respond with user details (excluding password)
+    const { password: _, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  });
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

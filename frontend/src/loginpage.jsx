@@ -1,5 +1,5 @@
 // loginpage.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 
@@ -11,15 +11,22 @@ const LoginPage = () => {
     e.preventDefault();
     const { username, password } = credentials;
     
-    if ((username === 'admin' && password === '123') || 
-        (username === 'customer' && password === '123')) {
+    if ((username === 'admin' && password === '123') ) {
       localStorage.setItem('user', username);
       alert('Login successful');
       navigate('/dashboard');
     } else {
+      
+
+    if ((username === 'customer' && password === '123') ) {
+      localStorage.setItem('user', username);
+      alert('Login successful');
+      navigate('/customer');
+    } else {
       alert('Invalid credentials');
     }
-  };
+        
+  }};
 
   return (
     <div className="login-container">
