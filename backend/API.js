@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3004;
 
 app.use(cors({
     origin: ['*', 'http://127.0.0.1:5500', 'http://127.0.0.1:5501', 'http://localhost:5173' ,'https://imane2.netlify.app' , 'http://localhost:8888']  // Allow both front-end origins
+    
 }));
 
 
