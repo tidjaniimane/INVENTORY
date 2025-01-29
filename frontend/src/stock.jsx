@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './styles.css';
 
 const Stock = () => {
@@ -15,7 +15,7 @@ const Stock = () => {
   const [updateForm, setUpdateForm] = useState({ stockName: '', newQuantity: '' });
   const [deleteStockId, setDeleteStockId] = useState('');
   const [message, setMessage] = useState('');
-  const apiUrl = 'https://inventory-kwv2.onrender.com/api/stock';
+  const apiUrl = 'http://localhost:3004/api/stock';
 
   useEffect(() => {
     fetchStock();
@@ -104,6 +104,11 @@ const Stock = () => {
     }
   };
 
+  // Function to check stock quantity and display warning if it's low
+  const isStockLow = (quantity) => {
+    return quantity < 3;
+  };
+
   return (
     <div className="container">
       <h1>Stock Management</h1>
@@ -186,7 +191,12 @@ const Stock = () => {
                 <td>{stock.productName}</td>
                 <td>{stock.category}</td>
                 <td>{stock.warehouse}</td>
-                <td>{stock.quantity}</td>
+                <td>
+                  {stock.quantity}
+                  {isStockLow(stock.quantity) && (
+                    <span className="low-stock-warning"> (Low stock)</span>
+                  )}
+                </td>
                 <td>{stock.supplier}</td>
                 <td>{stock.price}</td>
               </tr>

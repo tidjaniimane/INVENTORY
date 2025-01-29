@@ -6,7 +6,7 @@ import './styles.css';
     import  { useState, useEffect } from "react";
 
     const Users = () => {
-      const apiUrl = "https://inventory-kwv2.onrender.com/api/users";
+      const apiUrl = "http://localhost:3004/api/users";
     
       // State variables
       const [users, setUsers] = useState([]);
