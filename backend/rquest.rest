@@ -1,4 +1,4 @@
-GET http://localhost:3003/API/products
+GET http://localhost:3004/API/products
 
 ###
 GET https://inventory-kwv2.onrender.com/api/products
