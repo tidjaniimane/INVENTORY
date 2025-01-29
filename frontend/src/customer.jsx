@@ -73,7 +73,7 @@ function Customer() {
     event.preventDefault();
   
     const selectedProducts = products.filter(product => product.quantity > 0);
-    
+  
     // Validate that at least one product is selected
     if (selectedProducts.length === 0) {
       alert("Please select at least one product.");
@@ -83,18 +83,20 @@ function Customer() {
     // Validate that all customer details are provided
     if (!customerData.name || !customerData.phone || !customerData.address) {
       alert("All customer details are required.");
-      console.log("Customer Data:", customerData);  // Debugging line
       return;
     }
   
     // Prepare order data
     const orderData = {
-      customerName: customerData.name,
-      customerPhone: customerData.phone,
-      customerAddress: customerData.address,
-      products: selectedProducts.map(product => ({
-        id: product._id,
-        quantity: product.quantity
+      customer: {
+        name: customerData.name,
+        phone: customerData.phone,
+        address: customerData.address
+      },
+      items: selectedProducts.map(product => ({
+        productId: product._id,  // Ensure this is the correct field name for the product ID
+        quantity: product.quantity,
+        price: product.price
       }))
     };
   
@@ -130,6 +132,7 @@ function Customer() {
       alert(error.message || "Error submitting order. Please try again.");
     }
   };
+  
   
 
   return (

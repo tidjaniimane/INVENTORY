@@ -523,18 +523,29 @@ app.get('/api/orders', async (req, res) => {
     }
 });
 
+// Order creation route
 app.post('/api/orders/create', async (req, res) => {
     try {
-        // Create customer first
-        const customer = new Customer(req.body.customer);
-        await customer.save();
+        // Check if customer exists or create a new one
+        let customer;
+        if (req.body.customer._id) {
+            // If customer ID is provided, find customer
+            customer = await Customer.findById(req.body.customer._id);
+            if (!customer) {
+                return res.status(404).json({ success: false, error: 'Customer not found' });
+            }
+        } else {
+            // Create a new customer if no ID is provided
+            customer = new Customer(req.body.customer);
+            await customer.save();
+        }
 
-        // Calculate total amount
+        // Calculate the total amount from the items in the order
         const totalAmount = req.body.items.reduce((sum, item) => {
             return sum + (item.price * item.quantity);
         }, 0);
 
-        // Create order with customer reference
+        // Prepare order data with customer reference
         const orderData = {
             customerId: customer._id,
             items: req.body.items.map(item => ({
@@ -545,6 +556,7 @@ app.post('/api/orders/create', async (req, res) => {
             totalAmount: totalAmount
         };
 
+        // Create and save the order
         const order = new Order(orderData);
         await order.save();
 
@@ -556,37 +568,51 @@ app.post('/api/orders/create', async (req, res) => {
             );
         }
 
-        res.status(201).json({ 
-            success: true, 
+        // Respond with the created order
+        res.status(201).json({
+            success: true,
             data: { order: await order.populate('customerId') }
         });
     } catch (error) {
+        console.error(error);
         res.status(400).json({ success: false, error: error.message });
     }
 });
 
-// Update order status
+// Update order status route
 app.patch('/api/orders/:orderId/status', async (req, res) => {
     try {
         const { status } = req.body;
+        const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered'];
+        
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ success: false, error: 'Invalid status' });
+        }
+
         const order = await Order.findByIdAndUpdate(
             req.params.orderId,
             { status },
             { new: true }
         ).populate('customerId');
         
+        if (!order) {
+            return res.status(404).json({ success: false, error: 'Order not found' });
+        }
+
         res.json({ success: true, data: { order } });
     } catch (error) {
+        console.error(error);
         res.status(400).json({ success: false, error: error.message });
     }
 });
 
-// Customer Routes
+// Get all customers route
 app.get('/api/customers', async (req, res) => {
     try {
         const customers = await Customer.find();
         res.json({ success: true, data: { customers } });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -594,11 +620,12 @@ app.get('/api/customers', async (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ 
-        success: false, 
-        error: 'Something went wrong! Please try again later.' 
+    res.status(500).json({
+        success: false,
+        error: 'Something went wrong! Please try again later.'
     });
 });
+
 
 //LOGIN ROUTE 
 //LOGIN ROUTE
