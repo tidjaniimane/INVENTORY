@@ -8,8 +8,7 @@ const PORT = process.env.PORT || 3004;
 
 
 app.use(cors({
-    origin: ['*', 'http://127.0.0.1:5500', 'http://127.0.0.1:5501', 'http://localhost:5173' ,'https://imanat.netlify.app' ,
-     'https://gleeful-lokum-86f064.netlify.app','https://sage-banoffee-082fa9.netlify.app' , 'http://localhost:3004']  // Allow both front-end origins
+    origin: ['*', 'http://127.0.0.1:5500', 'http://127.0.0.1:5501', 'http://localhost:5173' ,'https://imanat.netlify.app' , 'http://localhost:3004']  // Allow both front-end origins
     
 }));
 
