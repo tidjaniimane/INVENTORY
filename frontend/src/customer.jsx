@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import './styles.css';
 
-const apiUrl = "https://inventory-kwv2.onrender.com/api";
+const apiUrl = "/.netlify/functions";
+
 
 function Customer() {
   const [products, setProducts] = useState([]);
@@ -16,7 +17,8 @@ function Customer() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch(`${apiUrl}/products`);
+        const response = await fetch(`${apiUrl}/fetchProducts`);
+
         
         if (!response.ok) {
           throw new Error('Failed to fetch products');
@@ -92,7 +94,8 @@ function Customer() {
     };
 
     try {
-      const response = await fetch(`${apiUrl}/orders/create`, {
+      const response = await fetch(`${apiUrl}/submitOrder`, 
+        {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
