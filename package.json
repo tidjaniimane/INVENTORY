@@ -11,6 +11,7 @@
                 "express": "^4.21.2",
                 "mongoose": "^8.9.5",
                 "netlify-lambda": "^2.0.16",
+                "node-fetch": "^3.3.2",
                 "path": "^0.12.7"
         }
 }
