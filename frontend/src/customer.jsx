@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './styles.css';
 
-const apiUrl = "http://localhost:3004/api";
+const apiUrl = "https://inventory-kwv2.onrender.com/api";
 
 function Customer() {
   const [products, setProducts] = useState([]);

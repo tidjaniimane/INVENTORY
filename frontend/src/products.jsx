@@ -8,7 +8,7 @@ const Products = () => {
   const [updateProduct, setUpdateProduct] = useState({ id: '', quantity: '' });
   const [deleteProductId, setDeleteProductId] = useState('');
 
-  const apiUrl = 'http://localhost:3004/api/products';
+  const apiUrl = 'https://inventory-kwv2.onrender.com/api/products';
 
   useEffect(() => {
     fetchProducts();

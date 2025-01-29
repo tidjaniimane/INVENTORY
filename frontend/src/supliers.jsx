@@ -13,7 +13,7 @@ const Suppliers = () => {
   const [updateSupplier, setUpdateSupplier] = useState(null);
   const [deleteSupplierName, setDeleteSupplierName] = useState('');
   const [message, setMessage] = useState('');
-  const apiUrl = 'http://localhost:3004/api/suppliers';
+  const apiUrl = 'https://inventory-kwv2.onrender.com/api/suppliers';
 
   useEffect(() => {
     fetchSuppliers();

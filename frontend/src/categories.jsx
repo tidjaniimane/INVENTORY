@@ -9,7 +9,7 @@ const CategoriesManagement = () => {
   const [loading, setLoading] = useState(false); // To handle loading state
   const [error, setError] = useState(''); // To handle errors
 
-  const apiUrl = 'http://localhost:3004/api/categories';
+  const apiUrl = 'https://inventory-kwv2.onrender.com/api/categories';
 
   useEffect(() => {
     fetchCategories();

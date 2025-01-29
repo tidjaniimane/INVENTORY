@@ -4,7 +4,7 @@ import './styles.css';
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [message, setMessage] = useState('');
-  const apiUrl = 'http://localhost:3004/api/orders';
+  const apiUrl = 'https://inventory-kwv2.onrender.com/api/orders';
 
   useEffect(() => {
     fetchOrders();

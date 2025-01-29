@@ -15,7 +15,7 @@ const Stock = () => {
   const [updateForm, setUpdateForm] = useState({ stockName: '', newQuantity: '' });
   const [deleteStockId, setDeleteStockId] = useState('');
   const [message, setMessage] = useState('');
-  const apiUrl = 'http://localhost:3004/api/stock';
+  const apiUrl = 'https://inventory-kwv2.onrender.com/api/stock';
 
   useEffect(() => {
     fetchStock();

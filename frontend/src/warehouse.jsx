@@ -24,7 +24,7 @@ const Warehouse = () => {
   // State for delete warehouse form
   const [deleteWarehouseId, setDeleteWarehouseId] = useState('');
   
-  const apiUrl = 'http://localhost:3004/api/warehouses';
+  const apiUrl = 'https://inventory-kwv2.onrender.com/api/warehouses';
 
   // Fetch warehouses when component mounts
   useEffect(() => {
