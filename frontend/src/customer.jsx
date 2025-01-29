@@ -5,7 +5,6 @@ const apiUrl = "http://localhost:3004/api";
 
 function Customer() {
   const [products, setProducts] = useState([]);
-  const [orderItems, setOrderItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerData, setCustomerData] = useState({
     name: '',
@@ -14,46 +13,47 @@ function Customer() {
   });
 
   useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await fetch(`${apiUrl}/products`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-  
-        const result = await response.json();
-  
-        // Log the entire response to inspect its structure
-        console.log('Fetched Products:', result);
-        
-        // Check if the data object exists and contains products
-        if (result.data && result.data.products) {
-          setProducts(result.data.products);
-        } else {
-          console.error("No product data found");
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    }
     fetchProducts();
   }, []);
-  
-  const handleQuantityChange = (productId, value) => {
-    setOrderItems(prevItems => {
-      const newItems = [...prevItems];
-      const index = newItems.findIndex(item => item.productId === productId);
-      if (index > -1) {
-        newItems[index].quantity = value;
-      } else {
-        newItems.push({ productId, quantity: value });
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/products`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
       }
-      return newItems;
-    });
+      const result = await response.json();
+      if (result.data && result.data.products) {
+        const productsWithQuantity = result.data.products.map(product => ({
+          ...product,
+          quantity: 0
+        }));
+        setProducts(productsWithQuantity);
+      } else {
+        console.error("No product data found");
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const handleQuantityChange = (productId, value) => {
+    const quantity = Math.max(0, parseInt(value) || 0);
+    setProducts(prevProducts =>
+      prevProducts.map(product =>
+        product._id === productId
+          ? { ...product, quantity }
+          : product
+      )
+    );
   };
 
   const handleModalOpen = () => {
+    const hasSelectedProducts = products.some(product => product.quantity > 0);
+    if (!hasSelectedProducts) {
+      alert("Please select at least one product.");
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -71,41 +71,54 @@ function Customer() {
 
   const handleSubmitOrder = async (event) => {
     event.preventDefault();
-
-    if (orderItems.length === 0) {
+  
+    const selectedProducts = products.filter(product => product.quantity > 0);
+    
+    // Validate that at least one product is selected
+    if (selectedProducts.length === 0) {
       alert("Please select at least one product.");
       return;
     }
-
+  
+    // Validate that all customer details are provided
     if (!customerData.name || !customerData.phone || !customerData.address) {
       alert("All customer details are required.");
+      console.log("Customer Data:", customerData);  // Debugging line
       return;
     }
-
-    const order = {
-      customer: customerData,
-      items: orderItems.map(item => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        price: products.find(product => product._id === item.productId)?.price || 0
+  
+    // Prepare order data
+    const orderData = {
+      customerName: customerData.name,
+      customerPhone: customerData.phone,
+      customerAddress: customerData.address,
+      products: selectedProducts.map(product => ({
+        id: product._id,
+        quantity: product.quantity
       }))
     };
-
+  
+    console.log('Order data being sent:', orderData);  // Debugging line
+  
     try {
       const response = await fetch(`${apiUrl}/orders/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(order)
+        body: JSON.stringify(orderData)
       });
-
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);  // Debugging line
+  
       if (!response.ok) {
-        throw new Error('Failed to place order');
+        console.error('Error response from server:', responseData);  // Debugging line
+        throw new Error(responseData.message || 'Failed to place order');
       }
-
+  
       alert('Order placed successfully!');
-      setOrderItems([]);
+      setProducts(prev => prev.map(product => ({ ...product, quantity: 0 })));
       setCustomerData({
         name: '',
         phone: '',
@@ -114,9 +127,10 @@ function Customer() {
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error submitting order:", error);
-      alert("Error submitting order. Please try again.");
+      alert(error.message || "Error submitting order. Please try again.");
     }
   };
+  
 
   return (
     <div className="container">
@@ -135,7 +149,7 @@ function Customer() {
                 <input
                   type="number"
                   min="0"
-                  value={orderItems.find(item => item.productId === product._id)?.quantity || 0}
+                  value={product.quantity}
                   onChange={(e) => handleQuantityChange(product._id, e.target.value)}
                 />
               </div>
@@ -149,7 +163,6 @@ function Customer() {
         <button onClick={() => window.location.href = 'login.html'}>Logout</button>
       </div>
 
-      {/* Modal for customer info */}
       {isModalOpen && (
         <div>
           <div className="overlay" onClick={handleModalClose}></div>
